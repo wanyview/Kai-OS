@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kai-OS 数字主理人 (修复版)</title>
+    <style>
+        /* 基础设置 */
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: "Microsoft YaHei", sans-serif; background: #000; }
+        
+        /* 1. 数字人容器 (背景层) */
+        #avatar-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            /* 背景图：这里放你的背景图或者视频 */
+            background-image: url('https://images.unsplash.com/photo-1617581528909-5667d2d2d22e?q=80&w=1920&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+        }
+        
+        video {
+            width: 100%; height: 100%;
+            object-fit: cover; 
+            display: none; 
+        }
+        video.loaded { display: block; }
+
+        /* 2. 对话交互层 (布局修复：改为右下角悬浮) */
+        #chat-interface {
+            position: absolute;
+            /* --- 修改点：不再居中，而是靠右下角 --- */
+            bottom: 40px; 
+            right: 40px;  /* 距离右边40px */
+            left: auto;   /* 取消左边定位 */
+            transform: none; /* 取消居中位移 */
+            
+            /* --- 修改点：宽度变窄，防止太宽挡住背景 --- */
+            width: 320px; 
+            height: 400px; /* 给个固定高度，防止无限拉长 */
+            
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9); /*稍微不透明一点，看字更清楚*/
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* 顶部标题栏 */
+        .chat-header {
+            font-size: 16px; font-weight: bold; color: #333;
+            margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+        }
+
+        #chat-history {
+            flex: 1; /* 自动占满剩余空间 */
+            overflow-y: auto;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            padding-right: 5px; /* 给滚动条留点位置 */
+        }
+        /* 美化滚动条 */
+        #chat-history::-webkit-scrollbar { width: 5px; }
+        #chat-history::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+        .message { margin: 8px 0; padding: 10px 12px; border-radius: 12px; max-width: 90%; word-wrap: break-word; font-size: 14px;}
+        .user-msg { 
+            color: #fff; background: #2c3e50; 
+            align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px;
+        }
+        .kai-msg { 
+            color: #333; background: #f0f2f5;
+            align-self: flex-start; margin-right: auto; border-bottom-left-radius: 2px;
+        }
+
+        #input-area { display: flex; gap: 8px; }
+        input { 
+            flex: 1; padding: 10px; 
+            border: 1px solid #ddd; border-radius: 15px; outline: none; font-size: 14px;
+        }
+        button { 
+            padding: 0 15px; 
+            background: #2c3e50; color: #fff; border: none; 
+            border-radius: 15px; cursor: pointer; font-size: 14px;
+        }
+        button:hover { background: #45a049; }
+
+        /* 手机适配：如果是手机，还是得居中，因为屏幕太小 */
+        @media (max-width: 600px) {
+            #chat-interface {
+                width: 90%; right: 5%; bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="avatar-container">
+        <video id="main-video" src="assets/idle.mp4" autoplay loop muted playsinline></video>
+    </div>
+
+    <div id="chat-interface">
+        <div class="chat-header">☕ TIER 咖啡沙龙助手</div>
+        <div id="chat-history">
+            <div class="message kai-msg" id="welcome-msg"></div>
+        </div>
+        <div id="input-area">
+            <input type="text" id="user-input" placeholder="问我关于咖啡的问题..." autocomplete="off">
+            <button id="send-btn">发送</button>
+        </div>
+    </div>
+
+    <script>
+        const DEMO_CONFIG = {
+            welcome_message: "你好！我是 Kai。点击下方输入框跟我聊天，我会回答你的问题。（提示：点击发送后我会开启语音哦）",
+            mock_replies: [
+                "根据咖啡沙龙的资料，浅烘焙的豆子酸度会更高一些。",
+                "这个问题很有趣，我们可以从人工智能的角度来分析一下。",
+                "请稍等，我正在查询知识库..."
+            ]
+        };
+
+        const videoElement = document.getElementById('main-video');
+        const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        
+        // 标记：是否已经开启了声音
+        let isAudioEnabled = false;
+
+        window.onload = function() {
+            addMessage(DEMO_CONFIG.welcome_message, 'kai-msg');
+            
+            videoElement.play().then(() => {
+                videoElement.classList.add('loaded');
+            }).catch(e => console.log("等待交互播放"));
+        };
+
+        function enableAudio() {
+            if (!isAudioEnabled) {
+                // --- 修复点：核心代码，开启声音 ---
+                videoElement.muted = false; 
+                isAudioEnabled = true;
+                console.log("声音已开启");
+            }
+        }
+
+        function sendMessage() {
+            const question = userInput.value.trim();
+            if (!question) return;
+
+            // 1. 用户交互发生，立刻尝试开启声音
+            enableAudio();
+
+            // 2. 界面显示
+            addMessage(question, 'user-msg');
+            userInput.value = "";
+            userInput.focus();
+            scrollToBottom();
+
+            // 3. 模拟“说话状态”
+            // 真实场景：这里切换到 talking.mp4
+            // videoElement.src = "assets/talking.mp4"; 
+            // videoElement.play();
+
+            setTimeout(() => {
+                const randomReply = DEMO_CONFIG.mock_replies[Math.floor(Math.random() * DEMO_CONFIG.mock_replies.length)];
+                addMessage(randomReply, 'kai-msg');
+                scrollToBottom();
+                
+                // 模拟说完切回待机
+                // setTimeout(() => { videoElement.src = "assets/idle.mp4"; videoElement.play(); }, 3000);
+            }, 1000);
+        }
+
+        function addMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = "message " + className;
+            div.innerText = text;
+            chatHistory.appendChild(div);
+        }
+
+        function scrollToBottom() {
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
