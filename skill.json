@@ -1,0 +1,100 @@
+{
+  "name": "kai-os",
+  "version": "1.0.0",
+  "description": "Kai-OS 数字主理人 Skill - 让任何人都能快速创建自己的 AI 助手",
+  "main": "skill.json",
+  "author": "wanyview",
+  "license": "MIT",
+  "platforms": [
+    {
+      "name": "moltbot",
+      "version": ">=2026.1.0"
+    },
+    {
+      "name": "claude-code",
+      "version": ">=1.0.0"
+    }
+  ],
+  "templates": [
+    {
+      "id": "general",
+      "name": "通用助手",
+      "description": "日常助手，处理各类问题",
+      "datm": { "truth": 70, "goodness": 60, "beauty": 60, "intelligence": 80 }
+    },
+    {
+      "id": "coffee",
+      "name": "咖啡专家",
+      "description": "咖啡知识分享与冲煮指导",
+      "datm": { "truth": 85, "goodness": 60, "beauty": 50, "intelligence": 75 }
+    },
+    {
+      "id": "reading",
+      "name": "读书会主持",
+      "description": "文学、哲学、历史书籍讨论引导",
+      "datm": { "truth": 70, "goodness": 80, "beauty": 90, "intelligence": 75 }
+    },
+    {
+      "id": "tea",
+      "name": "茶道大师",
+      "description": "茶文化知识与品茗指导",
+      "datm": { "truth": 70, "goodness": 85, "beauty": 90, "intelligence": 70 }
+    },
+    {
+      "id": "education",
+      "name": "教育辅导",
+      "description": "学科知识讲解与学习指导",
+      "datm": { "truth": 90, "goodness": 70, "beauty": 60, "intelligence": 85 }
+    },
+    {
+      "id": "art",
+      "name": "艺术鉴赏",
+      "description": "艺术作品欣赏与美学讨论",
+      "datm": { "truth": 60, "goodness": 70, "beauty": 95, "intelligence": 80 }
+    },
+    {
+      "id": "business",
+      "name": "商业顾问",
+      "description": "商业策略与管理建议",
+      "datm": { "truth": 75, "goodness": 70, "beauty": 60, "intelligence": 90 }
+    },
+    {
+      "id": "health",
+      "name": "健康顾问",
+      "description": "健康养生与生活方式建议",
+      "datm": { "truth": 80, "goodness": 90, "beauty": 70, "intelligence": 70 }
+    }
+  ],
+  "commands": [
+    {
+      "name": "create",
+      "description": "创建新的数字主理人",
+      "usage": "/kai-os create --name <名称> --template <模板>"
+    },
+    {
+      "name": "list",
+      "description": "列出所有主理人",
+      "usage": "/kai-os list"
+    },
+    {
+      "name": "chat",
+      "description": "与主理人对话",
+      "usage": "/kai-os chat <主理人ID> <消息>"
+    },
+    {
+      "name": "datm",
+      "description": "查看/调整主理人 DATM",
+      "usage": "/kai-os datm <主理人ID> [--show|--set truth=80 good=60]"
+    },
+    {
+      "name": "delete",
+      "description": "删除主理人",
+      "usage": "/kai-os delete <主理人ID>"
+    }
+  ],
+  "permissions": [
+    "read:knowledge",
+    "write:knowledge",
+    "execute:agents"
+  ]
+}

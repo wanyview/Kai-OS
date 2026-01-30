@@ -3,196 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kai-OS 数字主理人 (修复版)</title>
+    <title>Kai-OS | 数字主理人开源平台</title>
     <style>
-        /* 基础设置 */
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: "Microsoft YaHei", sans-serif; background: #000; }
-        
-        /* 1. 数字人容器 (背景层) */
-        #avatar-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-            /* 背景图：这里放你的背景图或者视频 */
-            background-image: url('https://images.unsplash.com/photo-1617581528909-5667d2d2d22e?q=80&w=1920&auto=format&fit=crop'); 
-            background-size: cover;
-            background-position: center;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        video {
-            width: 100%; height: 100%;
-            object-fit: cover; 
-            display: none; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
         }
-        video.loaded { display: block; }
-
-        /* 2. 对话交互层 (布局修复：改为右下角悬浮) */
-        #chat-interface {
-            position: absolute;
-            /* --- 修改点：不再居中，而是靠右下角 --- */
-            bottom: 40px; 
-            right: 40px;  /* 距离右边40px */
-            left: auto;   /* 取消左边定位 */
-            transform: none; /* 取消居中位移 */
-            
-            /* --- 修改点：宽度变窄，防止太宽挡住背景 --- */
-            width: 320px; 
-            height: 400px; /* 给个固定高度，防止无限拉长 */
-            
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.9); /*稍微不透明一点，看字更清楚*/
-            backdrop-filter: blur(15px);
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* 头部 */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
             border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(255,255,255,0.5);
+            margin-top: 20px;
+            font-size: 0.9rem;
         }
-
-        /* 顶部标题栏 */
-        .chat-header {
-            font-size: 16px; font-weight: bold; color: #333;
-            margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+        
+        /* 特性区 */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
         }
-
-        #chat-history {
-            flex: 1; /* 自动占满剩余空间 */
-            overflow-y: auto;
+        
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .feature-card p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+        
+        /* 模板市场 */
+        .templates-section {
+            background: white;
+            padding: 50px;
+            border-radius: 24px;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        
+        .templates-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .templates-section > p {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .template-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        
+        .template-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+        
+        .template-icon {
+            font-size: 3rem;
             margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.5;
-            padding-right: 5px; /* 给滚动条留点位置 */
         }
-        /* 美化滚动条 */
-        #chat-history::-webkit-scrollbar { width: 5px; }
-        #chat-history::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
-
-        .message { margin: 8px 0; padding: 10px 12px; border-radius: 12px; max-width: 90%; word-wrap: break-word; font-size: 14px;}
-        .user-msg { 
-            color: #fff; background: #2c3e50; 
-            align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px;
+        
+        .template-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
         }
-        .kai-msg { 
-            color: #333; background: #f0f2f5;
-            align-self: flex-start; margin-right: auto; border-bottom-left-radius: 2px;
+        
+        .template-card p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
         }
-
-        #input-area { display: flex; gap: 8px; }
-        input { 
-            flex: 1; padding: 10px; 
-            border: 1px solid #ddd; border-radius: 15px; outline: none; font-size: 14px;
+        
+        .template-datm {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
         }
-        button { 
-            padding: 0 15px; 
-            background: #2c3e50; color: #fff; border: none; 
-            border-radius: 15px; cursor: pointer; font-size: 14px;
+        
+        .datm-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
         }
-        button:hover { background: #45a049; }
-
-        /* 手机适配：如果是手机，还是得居中，因为屏幕太小 */
-        @media (max-width: 600px) {
-            #chat-interface {
-                width: 90%; right: 5%; bottom: 20px;
+        
+        .datm-badge.truth { background: #dbeafe; color: #1e40af; }
+        .datm-badge.goodness { background: #dcfce7; color: #166534; }
+        .datm-badge.beauty { background: #fce7f3; color: #9d174d; }
+        .datm-badge.intelligence { background: #fef3c7; color: #92400e; }
+        
+        /* 操作区 */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        footer a {
+            color: white;
+            margin: 0 10px;
+        }
+        
+        /* 快捷链接 */
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .quick-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+        
+        .quick-links a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .template-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .template-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-
-    <div id="avatar-container">
-        <video id="main-video" src="assets/idle.mp4" autoplay loop muted playsinline></video>
-    </div>
-
-    <div id="chat-interface">
-        <div class="chat-header">☕ TIER 咖啡沙龙助手</div>
-        <div id="chat-history">
-            <div class="message kai-msg" id="welcome-msg"></div>
-        </div>
-        <div id="input-area">
-            <input type="text" id="user-input" placeholder="问我关于咖啡的问题..." autocomplete="off">
-            <button id="send-btn">发送</button>
-        </div>
-    </div>
-
-    <script>
-        const DEMO_CONFIG = {
-            welcome_message: "你好！我是 Kai。点击下方输入框跟我聊天，我会回答你的问题。（提示：点击发送后我会开启语音哦）",
-            mock_replies: [
-                "根据咖啡沙龙的资料，浅烘焙的豆子酸度会更高一些。",
-                "这个问题很有趣，我们可以从人工智能的角度来分析一下。",
-                "请稍等，我正在查询知识库..."
-            ]
-        };
-
-        const videoElement = document.getElementById('main-video');
-        const chatHistory = document.getElementById('chat-history');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
+    <div class="container">
+        <header>
+            <h1>🤖 Kai-OS</h1>
+            <p>数字主理人开源平台 - 让任何人都能快速创建自己的 AI 助手</p>
+            <div class="badge">v0.5.0 | AAMAS 2026 学术支撑</div>
+        </header>
         
-        // 标记：是否已经开启了声音
-        let isAudioEnabled = false;
-
-        window.onload = function() {
-            addMessage(DEMO_CONFIG.welcome_message, 'kai-msg');
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>DATM 知识矩阵</h3>
+                <p>真/善/美/灵四维动态平衡，让 AI 更懂知识传承</p>
+            </div>
             
-            videoElement.play().then(() => {
-                videoElement.classList.add('loaded');
-            }).catch(e => console.log("等待交互播放"));
-        };
-
-        function enableAudio() {
-            if (!isAudioEnabled) {
-                // --- 修复点：核心代码，开启声音 ---
-                videoElement.muted = false; 
-                isAudioEnabled = true;
-                console.log("声音已开启");
-            }
-        }
-
-        function sendMessage() {
-            const question = userInput.value.trim();
-            if (!question) return;
-
-            // 1. 用户交互发生，立刻尝试开启声音
-            enableAudio();
-
-            // 2. 界面显示
-            addMessage(question, 'user-msg');
-            userInput.value = "";
-            userInput.focus();
-            scrollToBottom();
-
-            // 3. 模拟“说话状态”
-            // 真实场景：这里切换到 talking.mp4
-            // videoElement.src = "assets/talking.mp4"; 
-            // videoElement.play();
-
-            setTimeout(() => {
-                const randomReply = DEMO_CONFIG.mock_replies[Math.floor(Math.random() * DEMO_CONFIG.mock_replies.length)];
-                addMessage(randomReply, 'kai-msg');
-                scrollToBottom();
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>多场景适配</h3>
+                <p>咖啡、读书、教育、艺术...一键切换不同场景</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔌</div>
+                <h3>开源易扩展</h3>
+                <p>GitHub 开源，可自由定制，支持二次开发</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>轻量部署</h3>
+                <p>无需 GPU，CPU 即可运行，JSON 文件存储</p>
+            </div>
+        </section>
+        
+        <section class="templates-section">
+            <h2>🎨 场景模板市场</h2>
+            <p>选择适合你的场景，快速创建数字主理人</p>
+            
+            <div class="template-grid">
+                <a href="/create?template=general" class="template-card">
+                    <div class="template-icon">👤</div>
+                    <h4>通用助手</h4>
+                    <p>日常问题解答与任务处理</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真70</span>
+                        <span class="datm-badge goodness">善60</span>
+                        <span class="datm-badge beauty">美60</span>
+                        <span class="datm-badge intelligence">灵80</span>
+                    </div>
+                </a>
                 
-                // 模拟说完切回待机
-                // setTimeout(() => { videoElement.src = "assets/idle.mp4"; videoElement.play(); }, 3000);
-            }, 1000);
-        }
-
-        function addMessage(text, className) {
-            const div = document.createElement('div');
-            div.className = "message " + className;
-            div.innerText = text;
-            chatHistory.appendChild(div);
-        }
-
-        function scrollToBottom() {
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
-
-        sendBtn.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', function(e) {
-            if(e.key === 'Enter') sendMessage();
-        });
-    </script>
+                <a href="/create?template=coffee" class="template-card">
+                    <div class="template-icon">☕</div>
+                    <h4>咖啡专家</h4>
+                    <p>咖啡知识与冲煮指导</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真85</span>
+                        <span class="datm-badge goodness">善60</span>
+                        <span class="datm-badge beauty">美50</span>
+                        <span class="datm-badge intelligence">灵75</span>
+                    </div>
+                </a>
+                
+                <a href="/create?template=reading" class="template-card">
+                    <div class="template-icon">📚</div>
+                    <h4>读书会主持</h4>
+                    <p>书籍讨论引导与知识分享</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真70</span>
+                        <span class="datm-badge goodness">善80</span>
+                        <span class="datm-badge beauty">美90</span>
+                        <span class="datm-badge intelligence">灵75</span>
+                    </div>
+                </a>
+                
+                <a href="/create?template=tea" class="template-card">
+                    <div class="template-icon">🍵</div>
+                    <h4>茶道大师</h4>
+                    <p>茶文化与品茗指导</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真70</span>
+                        <span class="datm-badge goodness">善85</span>
+                        <span class="datm-badge beauty">美90</span>
+                        <span class="datm-badge intelligence">灵70</span>
+                    </div>
+                </a>
+                
+                <a href="/create?template=education" class="template-card">
+                    <div class="template-icon">📖</div>
+                    <h4>教育辅导</h4>
+                    <p>学科知识与学习指导</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真90</span>
+                        <span class="datm-badge goodness">善70</span>
+                        <span class="datm-badge beauty">美60</span>
+                        <span class="datm-badge intelligence">灵85</span>
+                    </div>
+                </a>
+                
+                <a href="/create?template=art" class="template-card">
+                    <div class="template-icon">🎨</div>
+                    <h4>艺术鉴赏</h4>
+                    <p>艺术作品与美学讨论</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真60</span>
+                        <span class="datm-badge goodness">善70</span>
+                        <span class="datm-badge beauty">美95</span>
+                        <span class="datm-badge intelligence">灵80</span>
+                    </div>
+                </a>
+                
+                <a href="/create?template=business" class="template-card">
+                    <div class="template-icon">💼</div>
+                    <h4>商业顾问</h4>
+                    <p>商业策略与管理建议</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真75</span>
+                        <span class="datm-badge goodness">善70</span>
+                        <span class="datm-badge beauty">美60</span>
+                        <span class="datm-badge intelligence">灵90</span>
+                    </div>
+                </a>
+                
+                <a href="/create?template=health" class="template-card">
+                    <div class="template-icon">💪</div>
+                    <h4>健康顾问</h4>
+                    <p>健康养生与生活方式</p>
+                    <div class="template-datm">
+                        <span class="datm-badge truth">真80</span>
+                        <span class="datm-badge goodness">善90</span>
+                        <span class="datm-badge beauty">美70</span>
+                        <span class="datm-badge intelligence">灵70</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+        
+        <section class="actions">
+            <a href="/dashboard" class="btn btn-primary">
+                📊 管理我的主理人
+            </a>
+            <a href="https://github.com/wanyview/Kai-OS" target="_blank" class="btn btn-secondary">
+                ⭐ GitHub 开源
+            </a>
+        </section>
+        
+        <footer>
+            <p>Kai-OS | 数字主理人开源平台</p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">AAMAS 2026 学术论文支撑 | 适合高中生创新实践</p>
+            
+            <div class="quick-links">
+                <a href="/docs/API.md">📖 API 文档</a>
+                <a href="/docs/FUDAN_SALON_PPT.html">📊 演示 PPT</a>
+                <a href="/docs/RESEARCH_REPORT.md">📈 市场调研</a>
+                <a href="https://github.com/wanyview/Kai-OS/issues">🐛 反馈问题</a>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 0.8rem;">
+                Built with ❤️ by Kai Digital Agent
+            </p>
+        </footer>
+    </div>
 </body>
 </html>

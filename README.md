@@ -67,27 +67,28 @@ const reply = await fetch('http://localhost:3000/api/hosts/abc123/chat', {
 
 ## ✨ 核心功能
 
-### v0.5.0 (当前版本) - 读书会场景扩展 🆕
+### v0.5.0 (当前版本) - 场景模板系统 🆕
 
-- ✅ **用户系统**：注册/登录/会话管理
+- ✅ **通用框架**：数字主理人核心平台 (skill 化)
 - ✅ **主理人管理**：创建、编辑、删除数字主理人
 - ✅ **5步创建向导**：简单几步打造专属分身
 - ✅ **知识矩阵 (DATM) 可视化工具**
 - ✅ **RESTful API**：主理人 CRUD + DATM 读写
 - ✅ **Webhook 回调**：事件订阅 + 签名验证
 - ✅ **开发者文档**：API 文档 + SDK 示例
-- ✅ **读书会场景** 🆕
-  - 6 种书籍类型 (文学/哲学/历史/科普/商业/心理)
+- ✅ **场景模板系统** 🆕
+  - 8 种可选场景模板 (通用/咖啡/读书会/茶道/教育/艺术/商业/健康)
   - 预置 Prompt 模板 (调度/专家/问答智能体)
-  - DATM 智能推荐
-  - 模板市场预设 (百年孤独/道德经/思考快与慢/人类简史)
+  - 场景 DATM 智能推荐
+  - 轻松切换不同角色
 - ✅ **Prompt 模板库**：内置多种场景模板
 
 ### 即将推出 (v0.6+)
 
-- 📱 **模板市场**
+- 📱 **模板市场** (用户可分享模板)
 - 🐳 **Docker 部署**
 - 🔐 **API Key 认证**
+- 📱 **移动端 APP**
 
 ---
 
@@ -101,17 +102,17 @@ kai-os/
 │   │   ├── dashboard.html      # 主理人管理面板
 │   │   ├── create-host.html    # 创建主理人向导
 │   │   ├── datm-viz.html       # 知识矩阵可视化工具
-│   │   └── reading.html        # 🆕 读书会场景页面
+│   │   └── reading.html        # 场景模板页面 (可选)
 │   └── assets/
 │       ├── css/       # 样式
 │       │   ├── style.css
 │       │   ├── datm-viz.css
-│       │   └── reading.css     # 🆕 读书会样式
+│       │   └── reading.css     # 场景样式
 │       ├── js/        # 脚本
 │       │   ├── dashboard.js
 │       │   ├── create-host.js
 │       │   ├── datm-viz.js
-│       │   └── reading.js      # 🆕 读书会逻辑
+│       │   └── reading.js      # 场景逻辑
 │       └── avatars/   # 头像
 ├── data/              # 数据存储 (JSON)
 ├── docs/              # 文档
@@ -119,8 +120,10 @@ kai-os/
 │   ├── API.md         # 开发者文档
 │   ├── FUDAN_SALON_*.md  # 沙龙方案/PPT
 │   └── RESEARCH_REPORT.md  # 市场调研
-├── prompts/           # 🆕 Prompt 模板
-│   └── reading-club.yaml   # 读书会场景模板
+├── prompts/           # Prompt 模板库
+│   └── reading-club.yaml   # 读书会模板
+├── skill.json         # 🆕 Skill 定义文件
+├── SKILL.md           # 🆕 Skill 使用文档
 ├── server.js          # 主服务器
 ├── package.json
 └── ROADMAP.md         # 版本路线图
