@@ -1,6 +1,6 @@
 {
   "name": "kai-os",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Kai-OS: 数字主理人开源构建平台",
   "main": "server.js",
   "scripts": {

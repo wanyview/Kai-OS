@@ -1,6 +1,6 @@
 /**
  * Kai-OS Platform Server
- * v0.3.0 - 知识矩阵可视化
+ * v0.4.0 - 开放 API & 第三方接入
  */
 
 const http = require('http');
@@ -20,7 +20,8 @@ if (!fs.existsSync(DATA_DIR)) {
 const STORES = {
   users: path.join(DATA_DIR, 'users.json'),
   hosts: path.join(DATA_DIR, 'hosts.json'),
-  sessions: path.join(DATA_DIR, 'sessions.json')
+  sessions: path.join(DATA_DIR, 'sessions.json'),
+  webhooks: path.join(DATA_DIR, 'webhooks.json')  // v0.4 新增
 };
 
 // 初始化存储
@@ -212,7 +213,114 @@ async function handleAPI(req, res, route) {
       const filtered = hosts.filter(h => h.id !== id);
       
       fs.writeFileSync(STORES.hosts, JSON.stringify(filtered, null, 2));
+      
+      // 触发 webhook: host.deleted
+      triggerWebhooks('host.deleted', { hostId: id });
+      
       res.end(JSON.stringify({ success: true }));
+      return;
+    }
+
+    // ===== Webhook API (v0.4) =====
+    
+    // GET /api/webhooks - 获取所有 webhook
+    if (pathname === '/api/webhooks' && method === 'GET') {
+      const webhooks = JSON.parse(fs.readFileSync(STORES.webhooks, 'utf8'));
+      // 不返回 secret
+      const safeWebhooks = webhooks.map(w => ({ ...w, secret: w.secret ? '***' : '' }));
+      res.end(JSON.stringify({ success: true, data: safeWebhooks }));
+      return;
+    }
+
+    // POST /api/webhooks - 创建 webhook
+    if (pathname === '/api/webhooks' && method === 'POST') {
+      const body = await parseBody(req);
+      const webhooks = JSON.parse(fs.readFileSync(STORES.webhooks, 'utf8'));
+      
+      if (!body.url || !body.events || body.events.length === 0) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ success: false, error: '缺少必要字段' }));
+        return;
+      }
+
+      const newWebhook = {
+        id: Date.now().toString(36),
+        url: body.url,
+        events: body.events,
+        secret: body.secret || generateSecret(),
+        status: 'active',
+        createdAt: new Date().toISOString()
+      };
+      
+      webhooks.push(newWebhook);
+      fs.writeFileSync(STORES.webhooks, JSON.stringify(webhooks, null, 2));
+      
+      res.statusCode = 201;
+      res.end(JSON.stringify({ 
+        success: true, 
+        data: { ...newWebhook, secret: newWebhook.secret } // 首次返回完整 secret
+      }));
+      return;
+    }
+
+    // DELETE /api/webhooks/:id - 删除 webhook
+    if (pathname.startsWith('/api/webhooks/') && method === 'DELETE') {
+      const id = pathname.split('/').pop();
+      const webhooks = JSON.parse(fs.readFileSync(STORES.webhooks, 'utf8'));
+      const filtered = webhooks.filter(w => w.id !== id);
+      
+      fs.writeFileSync(STORES.webhooks, JSON.stringify(filtered, null, 2));
+      res.end(JSON.stringify({ success: true }));
+      return;
+    }
+
+    // ===== DATM API (v0.4) =====
+    
+    // GET /api/datm/:hostId - 获取 DATM
+    if (pathname.startsWith('/api/datm/') && method === 'GET') {
+      const hostId = pathname.split('/').pop();
+      const hosts = JSON.parse(fs.readFileSync(STORES.hosts, 'utf8'));
+      const host = hosts.find(h => h.id === hostId);
+      
+      if (!host) {
+        res.statusCode = 404;
+        res.end(JSON.stringify({ success: false, error: '主理人不存在' }));
+        return;
+      }
+      
+      res.end(JSON.stringify({ 
+        success: true, 
+        datm: host.datm || { truth: 50, goodness: 50, beauty: 50, intelligence: 50 }
+      }));
+      return;
+    }
+
+    // PUT /api/datm/:hostId - 更新 DATM
+    if (pathname.startsWith('/api/datm/') && method === 'PUT') {
+      const hostId = pathname.split('/').pop();
+      const body = await parseBody(req);
+      const hosts = JSON.parse(fs.readFileSync(STORES.hosts, 'utf8'));
+      const index = hosts.findIndex(h => h.id === hostId);
+      
+      if (index === -1) {
+        res.statusCode = 404;
+        res.end(JSON.stringify({ success: false, error: '主理人不存在' }));
+        return;
+      }
+
+      // 验证 DATM 值
+      const { truth, goodness, beauty, intelligence } = body;
+      if ([truth, goodness, beauty, intelligence].some(v => v < 0 || v > 100 || isNaN(v))) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ success: false, error: 'DATM 值必须在 0-100 之间' }));
+        return;
+      }
+
+      hosts[index].datm = { truth, goodness, beauty, intelligence };
+      hosts[index].updatedAt = new Date().toISOString();
+      fs.writeFileSync(STORES.hosts, JSON.stringify(hosts, null, 2));
+      
+      res.end(JSON.stringify({ success: true, datm: hosts[index].datm }));
       return;
     }
 
@@ -264,10 +372,63 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// ===== Webhook 触发函数 (v0.4) =====
+function triggerWebhooks(event, data) {
+  const webhooks = JSON.parse(fs.readFileSync(STORES.webhooks, 'utf8'));
+  const targetWebhooks = webhooks.filter(w => w.status === 'active' && w.events.includes(event));
+  
+  targetWebhooks.forEach(webhook => {
+    const payload = JSON.stringify({
+      event,
+      data,
+      timestamp: new Date().toISOString()
+    });
+    
+    // 异步发送 webhook 请求（不等待响应）
+    const https = require('https');
+    const url = new URL(webhook.url);
+    
+    const options = {
+      hostname: url.hostname,
+      path: url.pathname + url.search,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-KaiOS-Event': event,
+        'X-KaiOS-Signature': generateSignature(payload, webhook.secret)
+      },
+      timeout: 5000
+    };
+    
+    const req = https.request(options, (res) => {
+      // 记录响应状态
+      console.log(`[Webhook] ${event} -> ${webhook.url} [${res.statusCode}]`);
+    });
+    
+    req.on('error', (error) => {
+      console.error(`[Webhook] ${event} -> ${webhook.url} [ERROR: ${error.message}]`);
+    });
+    
+    req.write(payload);
+    req.end();
+  });
+}
+
+// 生成签名
+function generateSignature(payload, secret) {
+  const crypto = require('crypto');
+  return crypto.createHmac('sha256', secret).update(payload).digest('hex');
+}
+
+// 生成随机 secret
+function generateSecret() {
+  return require('crypto').randomBytes(32).toString('hex');
+}
+
 server.listen(PORT, () => {
   console.log(`
 ╔═══════════════════════════════════════════╗
-║         Kai-OS Platform v0.2.0            ║
+║         Kai-OS Platform v0.4.0            ║
 ║   数字主理人开源构建平台                   ║
 ╠═══════════════════════════════════════════╣
 ║  🚀 Server running at:                    ║
@@ -277,15 +438,21 @@ server.listen(PORT, () => {
 ║     Home:     http://localhost:${PORT}/        ║
 ║     Dashboard:http://localhost:${PORT}/dashboard ║
 ║     Create:   http://localhost:${PORT}/create   ║
+║     DATM Viz: http://localhost:${PORT}/datm-viz ║
 ║                                           ║
-║  🔧 API Endpoints:                        ║
-║     GET    /api/users                     ║
-║     POST   /api/users                     ║
+║  🔧 API Endpoints (v0.4):                 ║
 ║     GET    /api/hosts                     ║
 ║     POST   /api/hosts                     ║
 ║     GET    /api/hosts/:id                 ║
-║     PUT    /api//hosts/:id                ║
+║     PUT    /api/hosts/:id                 ║
 ║     DELETE /api/hosts/:id                 ║
+║     GET    /api/datm/:hostId              ║
+║     PUT    /api/datm/:hostId              ║
+║     GET    /api/webhooks                  ║
+║     POST   /api/webhooks                  ║
+║     DELETE /api/webhooks/:id              ║
+║                                           ║
+║  📖 API Docs: http://localhost:${PORT}/docs/openapi.json ║
 ╚═══════════════════════════════════════════╝
   `);
 });

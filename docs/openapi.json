@@ -1,0 +1,445 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kai-OS API",
+    "version": "0.4.0",
+    "description": "Kai-OS 数字主理人平台的 RESTful API",
+    "contact": {
+      "name": "wanyview",
+      "url": "https://github.com/wanyview/Kai-OS"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "本地开发服务器"
+    },
+    {
+      "url": "https://kai-os.example.com",
+      "description": "生产服务器"
+    }
+  ],
+  "tags": [
+    {
+      "name": "hosts",
+      "description": "数字主理人管理"
+    },
+    {
+      "name": "users",
+      "description": "用户管理"
+    },
+    {
+      "name": "datm",
+      "description": "知识矩阵操作"
+    },
+    {
+      "name": "webhooks",
+      "description": "Webhook 回调"
+    }
+  ],
+  "paths": {
+    "/api/hosts": {
+      "get": {
+        "tags": ["hosts"],
+        "summary": "获取所有主理人",
+        "description": "返回当前用户可访问的所有数字主理人列表",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["draft", "published"] },
+            "description": "按状态过滤"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "按领域过滤"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Host" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["hosts"],
+        "summary": "创建主理人",
+        "description": "创建一个新的数字主理人",
+        "requestBody": {
+          "required": true",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/HostCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "创建成功",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Host" }
+              }
+            }
+          },
+          "400": { "description": "参数错误" }
+        }
+      }
+    },
+    "/api/hosts/{id}": {
+      "get": {
+        "tags": ["hosts"],
+        "summary": "获取单个主理人",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Host" }
+              }
+            }
+          },
+          "404": { "description": "主理人不存在" }
+        }
+      },
+      "put": {
+        "tags": ["hosts"],
+        "summary": "更新主理人",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/HostUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Host" }
+              }
+            }
+          },
+          "404": { "description": "主理人不存在" }
+        }
+      },
+      "delete": {
+        "tags": ["hosts"],
+        "summary": "删除主理人",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "删除成功" },
+          "404": { "description": "主理人不存在" }
+        }
+      }
+    },
+    "/api/hosts/{id}/chat": {
+      "post": {
+        "tags": ["hosts"],
+        "summary": "与主理人对话",
+        "description": "向指定主理人发送消息并获取回复",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                  "message": { "type": "string", "description": "用户消息" },
+                  "stream": {
+                    "type": "boolean",
+                    "description": "是否启用流式输出",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "reply": { "type": "string" },
+                    "hostId": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/datm/{id}": {
+      "get": {
+        "tags": ["datm"],
+        "summary": "获取主理人 DATM 配置",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "datm": {
+                      "type": "object",
+                      "properties": {
+                        "truth": { "type": "number" },
+                        "goodness": { "type": "number" },
+                        "beauty": { "type": "number" },
+                        "intelligence": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["datm"],
+        "summary": "更新主理人 DATM 配置",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["truth", "goodness", "beauty", "intelligence"],
+                "properties": {
+                  "truth": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "goodness": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "beauty": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "intelligence": { "type": "number", "minimum": 0, "maximum": 100 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "更新成功" }
+        }
+      }
+    },
+    "/api/webhooks": {
+      "get": {
+        "tags": ["webhooks"],
+        "summary": "获取所有 Webhook 配置",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Webhook" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["webhooks"],
+        "summary": "创建 Webhook",
+        "requestBody": {
+          "required": true",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WebhookCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "创建成功" }
+        }
+      }
+    },
+    "/api/webhooks/{id}": {
+      "delete": {
+        "tags": ["webhooks"],
+        "summary": "删除 Webhook",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "删除成功" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Host": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "avatar": { "type": "string" },
+          "domain": { "type": "string" },
+          "datm": {
+            "type": "object",
+            "properties": {
+              "truth": { "type": "number" },
+              "goodness": { "type": "number" },
+              "beauty": { "type": "number" },
+              "intelligence": { "type": "number" }
+            }
+          },
+          "status": { "type": "string", "enum": ["draft", "published"] },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "HostCreate": {
+        "type": "object",
+        "required": ["name", "creatorId"],
+        "properties": {
+          "name": { "type": "string", "description": "主理人名称" },
+          "description": { "type": "string" },
+          "domain": { "type": "string" },
+          "avatar": { "type": "string" },
+          "datm": {
+            "type": "object",
+            "properties": {
+              "truth": { "type": "number", "default": 50 },
+              "goodness": { "type": "number", "default": 50 },
+              "beauty": { "type": "number", "default": 50 },
+              "intelligence": { "type": "number", "default": 50 }
+            }
+          },
+          "cozeConfig": {
+            "type": "object",
+            "properties": {
+              "botId": { "type": "string" },
+              "apiKey": { "type": "string" }
+            }
+          }
+        }
+      },
+      "HostUpdate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "type": "string", "enum": ["draft", "published"] },
+          "datm": { "type": "object" }
+        }
+      },
+      "Webhook": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": "string" },
+          "events": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "secret": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      },
+      "WebhookCreate": {
+        "type": "object",
+        "required": ["url", "events"],
+        "properties": {
+          "url": { "type": "string", "format": "uri", "description": "回调 URL" },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["host.created", "host.updated", "host.deleted", "chat.message", "chat.start", "chat.end"]
+            }
+          },
+          "secret": { "type": "string", "description": "签名密钥" }
+        }
+      }
+    }
+  }
+}
