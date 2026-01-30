@@ -1,83 +1,183 @@
-\# Kai-OS: 数字主理人开源构建框架 (Digital Host Framework)
+# Kai-OS: 数字主理人开源构建平台
 
+[![][License: MIT]](https://opensource.org/licenses/MIT)
+[![][Version]](https://github.com/wanyview/kai-os/releases)
+[![][Stars]](https://github.com/wanyview/kai-os/stargazers)
 
+## 📖 项目简介
 
-\[!\[License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**Kai-OS** 是一个开源的数字主理人构建平台，让任何人都能快速创建自己的"数字分身"。
 
+本项目起源于 **TIER 咖啡沙龙** 的实践案例。我们发现，在运营线下沙龙、读书会、科普课堂时，组织者常面临"知识传递不标准、手忙脚乱、成果难沉淀"的痛点。
 
+### 🎯 愿景
 
-\## 📖 项目简介 (Introduction)
+打造一个**数字主理人生态系统**（类似 iOS），让其他想成为"数字主理人"的人可以使用你的平台，快速搭建属于自己的 AI 助手。
 
+### 👥 目标用户
 
+- **活动组织者**：咖啡沙龙、读书会、科普课堂
+- **内容创作者**：博主、自媒体、教育工作者
+- **企业团队**：内部知识管理、客户服务
 
-\*\*Kai-OS\*\* 是一个轻量级、低代码的数字主理人构建框架。
+---
 
+## 🚀 快速开始
 
-
-\[cite\_start]本项目起源于 \*\*TIER 咖啡沙龙\*\* 的实践案例 \[cite: 4, 13]\[cite\_start]。我们发现，在运营线下沙龙、读书会、科普课堂时，组织者常面临“知识传递不标准、手忙脚乱、成果难沉淀”的痛点 \[cite: 5, 6, 7]。
-
-
-
-Kai-OS 旨在帮助任何一位活动主理人（即使是高中生或非技术人员），利用 \*\*Coze (扣子)\*\* 和 \*\*AIGC视频技术\*\*，快速部署属于自己的“数字分身”。
-
-
-
-\## 🚀 核心特性 (Features)
-
-
-
-\* \[cite\_start]\*\*🧠 三维智能架构\*\*：内置“调度、专家、问答”三大模块的 Prompt 模板，支持标准化知识输出 \[cite: 66]。
-
-\* \[cite\_start]\*\*🎨 灵活形象适配\*\*：解耦了形象与逻辑，支持接入即梦/有言生成的任何风格数字人（如赛博朋克风、亲和学生风）\[cite: 36, 42]。
-
-\* \*\*🕸️ 轻量化 Web 容器\*\*：提供现成的 H5 页面框架，支持多模态交互（视频流+对话流）。
-
-\* \[cite\_start]\*\*📚 知识库标准化\*\*：独创“真(科学)、善(社科)、美(人文)、灵(交叉)”四维知识分类体系 \[cite: 63, 99]。
-
-
-
-\## 🛠️ 快速开始 (Quick Start)
-
-
-
-\### 第一步：克隆项目
+### 方式一：本地运行
 
 ```bash
+# 克隆项目
+git clone https://github.com/wanyview/kai-os.git
+cd kai-os
 
-git clone \[https://github.com/your-username/Kai-OS.git](https://github.com/your-username/Kai-OS.git)
+# 安装依赖
+npm install
 
-第二步：配置智能体 (The Brain)
-登录 Coze/扣子。
+# 启动服务器
+npm start
+```
 
-参考本项目中的 prompt_templates.md 创建你的 Bot。
+然后访问：http://localhost:3000
 
-记录下你的 Bot ID 和 API Key。
+### 方式二：Docker 部署
 
-第三步：制作数字人 (The Face)
-参考 avatar_guide.md 制作你的数字人循环视频（待机、说话、思考）。
+```bash
+docker build -t kai-os .
+docker run -p 3000:3000 kai-os
+```
 
-将视频文件放入 assets/ 文件夹（需自行创建）。
+---
 
-第四步：修改配置
-打开 js/config.js，填入你的 ID 和素材路径。
+## ✨ 核心功能
 
-第五步：运行
-直接浏览器打开 index.html 即可使用！
+### v0.2.0 (当前版本)
 
-🏗️ 架构说明 (Architecture)
-Kai-OS 采用分层协同架构 ：
+- ✅ **用户系统**：注册/登录/会话管理
+- ✅ **主理人管理**：创建、编辑、删除数字主理人
+- ✅ **5步创建向导**：简单几步打造专属分身
+- ✅ **知识矩阵 (DATM)**：可视化四维知识分类
+- ✅ **Prompt 模板库**：内置多种场景模板
+- ✅ **RESTful API**：完整的接口支持
 
-感知交互层：Web 前端 + 数字人视频流。
+### 即将推出 (v0.3+)
 
-核心功能层：Coze Agent (负责意图识别与流程调度)。
+- 📊 **知识矩阵可视化工具**
+- 🔌 **第三方 API 接入**
+- 📱 **模板市场**
+- 🐳 **Docker 部署**
 
-数据支撑层：基于 Markdown/Excel 的标准化知识库。
+---
 
-📄 贡献者 (Contributors)
-Founder: [Wendy] - TIER 咖啡沙龙主理人
+## 📁 项目结构
 
-Research: 基于《Kai 数字主理人：基于多模态交互技术的 AI 知识咖啡沙龙智能体开发与研究》
+```
+kai-os/
+├── src/
+│   ├── api/           # API 路由
+│   ├── pages/         # 页面
+│   │   ├── dashboard.html
+│   │   └── create-host.html
+│   └── assets/
+│       ├── css/       # 样式
+│       ├── js/        # 脚本
+│       └── avatars/   # 头像
+├── data/              # 数据存储 (JSON)
+├── server.js          # 主服务器
+├── package.json
+└── ROADMAP.md         # 版本路线图
+```
 
-📜 许可证
-MIT License
+---
 
+## 🛠️ 技术栈
+
+- **前端**: HTML5 + Vanilla JS (轻量、无框架)
+- **后端**: Node.js + 原生 HTTP
+- **存储**: SQLite / JSON 文件 (轻量)
+- **部署**: Docker + GitHub Pages
+- **AI 集成**: Coze (扣子) API
+
+---
+
+## 📦 版本历史
+
+| 版本 | 日期 | 特性 |
+|------|------|------|
+| v0.1 | 2026-01-29 | 基础框架，Web 容器 + Prompt 模板 |
+| v0.2 | 2026-01-29 | **平台基础设施**，用户系统 + 主理人管理 |
+| v0.3 | 规划中 | 知识矩阵可视化 |
+| v0.4 | 规划中 | 开放 API & 第三方接入 |
+| v1.0 | 规划中 | 正式平台发布 |
+
+详见 [ROADMAP.md](ROADMD.md)
+
+---
+
+## 🔧 使用指南
+
+### 1. 创建主理人
+
+1. 打开 Kai-OS 首页
+2. 点击"创建主理人"
+3. 填写基本信息（名称、领域）
+4. 选择形象风格
+5. 调整知识矩阵 (DATM)
+6. 配置 Coze 智能体
+7. 发布或保存草稿
+
+### 2. 配置 Coze 智能体
+
+1. 登录 [Coze (扣子)](https://coze.cn)
+2. 创建或选择 Bot
+3. 获取 Bot ID 和 API Key
+4. 在创建向导中填入
+
+### 3. 集成到你的项目
+
+```javascript
+// 调用 API 获取主理人列表
+const response = await fetch('/api/hosts');
+const hosts = await response.json();
+
+// 创建新主理人
+const response = await fetch('/api/hosts', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: '我的助手',
+    domain: 'education',
+    datm: { truth: 70, goodness: 50, beauty: 60, intelligence: 80 }
+  })
+});
+```
+
+---
+
+## 🤝 贡献指南
+
+欢迎贡献代码或建议！
+
+1. Fork 本项目
+2. 创建分支 (`git checkout -b feature/amazing`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送分支 (`git push origin feature/amazing`)
+5. 提交 Pull Request
+
+---
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+## 📞 联系我们
+
+- **作者**: wanyview
+- **GitHub**: https://github.com/wanyview/kai-os
+- **论文**: [Kai-OS: A Dual-Axis Multi-Agent Framework](https://arxiv.org)
+
+---
+
+*Built with ❤️ by Kai Digital Agent*

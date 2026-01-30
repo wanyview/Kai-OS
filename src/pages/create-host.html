@@ -1,0 +1,218 @@
+/**
+ * Kai-OS 创建主理人向导
+ * v0.2.0 - 5步快速创建
+ */
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>创建主理人 - Kai-OS</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="create-page">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/">Kai-OS</a>
+      <span class="nav-version">v0.2.0</span>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">首页</a>
+      <a href="/dashboard" class="nav-link">控制台</a>
+      <a href="/create" class="nav-link active">创建主理人</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header class="page-header">
+      <h1>✨ 创建你的数字主理人</h1>
+      <p>5步快速上手，打造专属数字分身</p>
+    </header>
+
+    <!-- 步骤指示器 -->
+    <div class="steps-indicator">
+      <div class="step active" data-step="1">
+        <span class="step-number">1</span>
+        <span class="step-label">基本信息</span>
+      </div>
+      <div class="step" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">形象设置</span>
+      </div>
+      <div class="step" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">知识矩阵</span>
+      </div>
+      <div class="step" data-step="4">
+        <span class="step-number">4</span>
+        <span class="step-label">Prompt配置</span>
+      </div>
+      <div class="step" data-step="5">
+        <span class="step-number">5</span>
+        <span class="step-label">完成发布</span>
+      </div>
+    </div>
+
+    <form id="create-form" class="create-form">
+      <!-- 步骤1: 基本信息 -->
+      <section class="form-step active" data-step="1">
+        <h2>📝 基本信息</h2>
+        <div class="form-group">
+          <label for="host-name">主理人名称 *</label>
+          <input type="text" id="host-name" name="name" placeholder="给你的主理人起个名字" required>
+        </div>
+        <div class="form-group">
+          <label for="host-desc">一句话介绍</label>
+          <input type="text" id="host-desc" name="description" placeholder="用一句话描述这个主理人的特点">
+        </div>
+        <div class="form-group">
+          <label for="host-domain">专业领域</label>
+          <select id="host-domain" name="domain">
+            <option value="general">通用</option>
+            <option value="coffee">咖啡</option>
+            <option value="education">教育</option>
+            <option value="tech">科技</option>
+            <option value="art">艺术</option>
+            <option value="health">健康</option>
+            <option value="business">商业</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" onclick="nextStep(1)">下一步 →</button>
+        </div>
+      </section>
+
+      <!-- 步骤2: 形象设置 -->
+      <section class="form-step" data-step="2">
+        <h2>🎨 形象设置</h2>
+        <div class="form-group">
+          <label>选择形象风格</label>
+          <div class="avatar-options">
+            <label class="avatar-option">
+              <input type="radio" name="avatar-style" value="student" checked>
+              <span class="avatar-preview student">学生</span>
+            </label>
+            <label class="avatar-option">
+              <input type="radio" name="avatar-style" value="professional">
+              <span class="avatar-preview professional">专业</span>
+            </label>
+            <label class="avatar-option">
+              <input type="radio" name="avatar-style" value="casual">
+              <span class="avatar-preview casual">轻松</span>
+            </label>
+            <label class="avatar-option">
+              <input type="radio" name="avatar-style" value="cyber">
+              <span class="avatar-preview cyber">赛博</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="avatar-url">或输入形象 URL</label>
+          <input type="url" id="avatar-url" name="avatarUrl" placeholder="https://...">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep(2)">← 上一步</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep(2)">下一步 →</button>
+        </div>
+      </section>
+
+      <!-- 步骤3: 知识矩阵 -->
+      <section class="form-step" data-step="3">
+        <h2>🧠 知识矩阵 (DATM)</h2>
+        <p class="form-hint">四维知识分类体系：真(科学)、善(社科)、美(人文)、灵(交叉)</p>
+        
+        <div class="datm-slider">
+          <div class="slider-group">
+            <label for="datm-truth">Truth 科学性 <span id="truth-value">50</span></label>
+            <input type="range" id="datm-truth" name="datm[truth]" min="0" max="100" value="50" oninput="updateSlider('truth')">
+          </div>
+          <div class="slider-group">
+            <label for="datm-goodness">Goodness 社科性 <span id="goodness-value">50</span></label>
+            <input type="range" id="datm-goodness" name="datm[goodness]" min="0" max="100" value="50" oninput="updateSlider('goodness')">
+          </div>
+          <div class="slider-group">
+            <label for="datm-beauty">Beauty 人文性 <span id="beauty-value">50</span></label>
+            <input type="range" id="datm-beauty" name="datm[beauty]" min="0" max="100" value="50" oninput="updateSlider('beauty')">
+          </div>
+          <div class="slider-group">
+            <label for="datm-intelligence">Intelligence 创新性 <span id="intelligence-value">50</span></label>
+            <input type="range" id="datm-intelligence" name="datm[intelligence]" min="0" max="100" value="50" oninput="updateSlider('intelligence')">
+          </div>
+        </div>
+
+        <div class="datm-preview">
+          <canvas id="datm-radar" width="300" height="300"></canvas>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep(3)">← 上一步</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep(3)">下一步 →</button>
+        </div>
+      </section>
+
+      <!-- 步骤4: Prompt配置 -->
+      <section class="form-step" data-step="4">
+        <h2>🤖 Prompt 配置</h2>
+        <p class="form-hint">使用 Coze (扣子) 平台配置智能体</p>
+
+        <div class="form-group">
+          <label for="coze-bot-id">Coze Bot ID</label>
+          <input type="text" id="coze-bot-id" name="cozeBotId" placeholder="从 Coze 平台获取 Bot ID">
+        </div>
+        
+        <div class="form-group">
+          <label for="coze-api-key">Coze API Key</label>
+          <input type="password" id="coze-api-key" name="cozeApiKey" placeholder="从 Coze 平台获取 API Key">
+        </div>
+
+        <details class="prompt-templates">
+          <summary>📚 Prompt 模板参考</summary>
+          <div class="template-content">
+            <h4>调度智能体 (Scheduler)</h4>
+            <textarea class="template-text" readonly>你是一个调度智能体，负责协调专家智能体和问答智能体的工作。根据用户的问题类型，将任务分配给合适的专家智能体，并整合输出。</textarea>
+            
+            <h4>专家智能体 (Expert)</h4>
+            <textarea class="template-text" readonly>你是一个领域专家，专注于特定领域的深度知识输出。请用专业但易懂的方式回答用户的问题。</textarea>
+            
+            <h4>问答智能体 (Q&A)</h4>
+            <textarea class="template-text" readonly>你是一个友好助手，擅长解答用户的各类问题。你的回复要简洁、有帮助，并适时引导深入学习。</textarea>
+          </div>
+        </details>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep(4)">← 上一步</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep(4)">下一步 →</button>
+        </div>
+      </section>
+
+      <!-- 步骤5: 完成 -->
+      <section class="form-step" data-step="5">
+        <h2>🎉 完成发布</h2>
+        
+        <div class="summary-card">
+          <h3>主理人配置摘要</h3>
+          <div id="summary-content"></div>
+        </div>
+
+        <div class="publish-options">
+          <label class="radio-option">
+            <input type="radio" name="publish" value="draft" checked>
+            <span>💾 保存为草稿</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="publish" value="publish">
+            <span>🚀 立即发布</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep(5)">← 上一步</button>
+          <button type="submit" class="btn btn-success">✅ 创建主理人</button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <script src="/assets/js/create-host.js"></script>
+</body>
+</html>

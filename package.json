@@ -1,0 +1,21 @@
+{
+  "name": "kai-os",
+  "version": "0.2.0",
+  "description": "Kai-OS: 数字主理人开源构建平台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "digital-host",
+    "ai-agent",
+    "kai-os",
+    "coze"
+  ],
+  "author": "wanyview",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

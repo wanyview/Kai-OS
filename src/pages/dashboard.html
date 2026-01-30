@@ -1,0 +1,62 @@
+/**
+ * Kai-OS Dashboard - 主理人管理面板
+ * v0.2.0
+ */
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kai-OS Dashboard - 我的主理人</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="dashboard-page">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/">Kai-OS</a>
+      <span class="nav-version">v0.2.0</span>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">首页</a>
+      <a href="/dashboard" class="nav-link active">控制台</a>
+      <a href="/create" class="nav-link">创建主理人</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header class="page-header">
+      <h1>🎛️ 我的主理人</h1>
+      <p>管理你的数字分身</p>
+      <a href="/create" class="btn btn-primary">➕ 创建新主理人</a>
+    </header>
+
+    <section class="stats-section">
+      <div class="stat-card">
+        <span class="stat-number" id="total-hosts">0</span>
+        <span class="stat-label">主理人总数</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="active-hosts">0</span>
+        <span class="stat-label">已发布</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="draft-hosts">0</span>
+        <span class="stat-label">草稿</span>
+      </div>
+    </section>
+
+    <section class="hosts-section">
+      <h2>📋 主理人列表</h2>
+      <div id="hosts-grid" class="hosts-grid">
+        <!-- 主理人卡片将动态插入 -->
+      </div>
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <p>还没有主理人</p>
+        <a href="/create" class="btn btn-primary">创建第一个主理人</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
