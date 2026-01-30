@@ -1,0 +1,167 @@
+/**
+ * Kai-OS 知识矩阵可视化工具
+ * v0.3.0 - DATM 动态可视化
+ */
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>知识矩阵可视化 - Kai-OS</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/datm-viz.css">
+</head>
+<body class="datm-page">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/">Kai-OS</a>
+      <span class="nav-version">v0.3.0</span>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">首页</a>
+      <a href="/dashboard" class="nav-link">控制台</a>
+      <a href="/create" class="nav-link">创建主理人</a>
+      <a href="/datm-viz" class="nav-link active">知识矩阵</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header class="page-header">
+      <h1>🧠 知识矩阵可视化 (DATM)</h1>
+      <p>探索 Dual-Axis Knowledge Matrix 的动态演化</p>
+    </header>
+
+    <div class="datm-viz-container">
+      <!-- 左侧：雷达图编辑器 -->
+      <section class="radar-section">
+        <h2>📊 实时雷达图</h2>
+        <div class="radar-container">
+          <canvas id="datm-radar-full" width="400" height="400"></canvas>
+        </div>
+        
+        <!-- 四维滑块 -->
+        <div class="datm-sliders">
+          <div class="slider-row">
+            <label>🔬 Truth (科学性)</label>
+            <input type="range" id="viz-truth" min="0" max="100" value="50">
+            <span class="slider-value" id="viz-truth-val">50</span>
+          </div>
+          <div class="slider-row">
+            <label>🤝 Goodness (社科性)</label>
+            <input type="range" id="viz-goodness" min="0" max="100" value="50">
+            <span class="slider-value" id="viz-goodness-val">50</span>
+          </div>
+          <div class="slider-row">
+            <label>🎨 Beauty (人文性)</label>
+            <input type="range" id="viz-beauty" min="0" max="100" value="50">
+            <span class="slider-value" id="viz-beauty-val">50</span>
+          </div>
+          <div class="slider-row">
+            <label>💡 Intelligence (创新性)</label>
+            <input type="range" id="viz-intelligence" min="0" max="100" value="50">
+            <span class="slider-value" id="viz-intelligence-val">50</span>
+          </div>
+        </div>
+
+        <!-- 预设模板 -->
+        <div class="preset-templates">
+          <h3>🎯 预设模板</h3>
+          <div class="preset-grid">
+            <button class="preset-btn" onclick="loadPreset('science')">
+              <span class="preset-icon">🔬</span>
+              <span>科学研究型</span>
+            </button>
+            <button class="preset-btn" onclick="loadPreset('education')">
+              <span class="preset-icon">📚</span>
+              <span>教育培训型</span>
+            </button>
+            <button class="preset-btn" onclick="loadPreset('creative')">
+              <span class="preset-icon">🎨</span>
+              <span>创意艺术型</span>
+            </button>
+            <button class="preset-btn" onclick="loadPreset('balanced')">
+              <span class="preset-icon">⚖️</span>
+              <span>均衡发展型</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右侧：知识轨迹时间线 -->
+      <section class="timeline-section">
+        <h2>📜 知识轨迹时间线</h2>
+        <div class="timeline-container" id="timeline">
+          <!-- 时间线项目将动态插入 -->
+        </div>
+        
+        <!-- 添加轨迹点 -->
+        <div class="add-timeline-point">
+          <h3>➕ 添加轨迹点</h3>
+          <div class="point-form">
+            <input type="text" id="point-label" placeholder="标签 (如: 初级阶段)">
+            <button class="btn btn-primary" onclick="addTimelinePoint()">添加</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 底部：演化分析 -->
+    <section class="evolution-section">
+      <h2>🔄 知识演化分析</h2>
+      <div class="evolution-cards">
+        <div class="evo-card">
+          <div class="evo-icon">📈</div>
+          <h3>当前状态</h3>
+          <p id="current-state">均衡型</p>
+        </div>
+        <div class="evo-card">
+          <div class="evo-icon">🎯</div>
+          <h3>优势维度</h3>
+          <p id="strength-dim">无明显优势</p>
+        </div>
+        <div class="evo-card">
+          <div class="evo-icon">📉</div>
+          <h3>待提升维度</h3>
+          <p id="weakness-dim">无明显短板</p>
+        </div>
+        <div class="evo-card">
+          <div class="evo-icon">💡</div>
+          <h3>发展建议</h3>
+          <p id="suggestion">保持均衡发展</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 导出功能 -->
+    <section class="export-section">
+      <h2>💾 导入/导出</h2>
+      <div class="export-buttons">
+        <button class="btn btn-secondary" onclick="exportDATM()">
+          📥 导出配置
+        </button>
+        <button class="btn btn-secondary" onclick="importDATM()">
+          📤 导入配置
+        </button>
+        <input type="file" id="import="display:none" accept-file" style=".json" onchange="handleImport(event)">
+        <button class="btn btn-primary" onclick="saveToHost()">
+          💾 保存到主理人
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- 隐藏的导入模态框 -->
+  <div id="import-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>📤 导入配置</h3>
+      <textarea id="import-json" placeholder="粘贴 JSON 配置..."></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="confirmImport()">确认导入</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/datm-viz.js"></script>
+</body>
+</html>

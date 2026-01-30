@@ -1,6 +1,6 @@
 /**
  * Kai-OS Platform Server
- * v0.2.0 - 平台基础设施
+ * v0.3.0 - 知识矩阵可视化
  */
 
 const http = require('http');
@@ -35,6 +35,8 @@ const routes = {
   'GET /': 'index.html',
   'GET /src/pages/dashboard.html': 'src/pages/dashboard.html',
   'GET /src/pages/create-host.html': 'src/pages/create-host.html',
+  'GET /src/pages/datm-viz.html': 'src/pages/datm-viz.html',
+  'GET /datm-viz': 'src/pages/datm-viz.html',
   'GET /src/api/users': 'api:users',
   'POST /api/users': 'api:create-user',
   'GET /api/hosts': 'api:hosts',

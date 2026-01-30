@@ -1,0 +1,364 @@
+/**
+ * DATM 可视化样式
+ * v0.3.0 DAT
+ */
+
+/* =====M 页面布局 ===== */
+.datm-page {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.datm-viz-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* ===== 雷达图区域 ===== */
+.radar-section,
+.timeline-section,
+.evolution-section,
+.export-section {
+  background: var(--bg-primary);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.radar-section h2,
+.timeline-section h2,
+.evolution-section h2,
+.export-section h2 {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.radar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+/* ===== DATM 滑块 ===== */
+.datm-sliders {
+  display: grid;
+  gap: 1rem;
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 50px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slider-row label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.slider-row input[type="range"] {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--value, 50%), var(--border-color) var(--value, 50%));
+  appearance: none;
+  cursor: pointer;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.slider-value {
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+/* ===== 预设模板 ===== */
+.preset-templates {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.preset-templates h3 {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.preset-btn:hover {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.preset-icon {
+  font-size: 1.5rem;
+}
+
+.preset-btn span:last-child {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* ===== 时间线 ===== */
+.timeline-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius-sm);
+  border-left: 4px solid var(--primary);
+  transition: var(--transition);
+}
+
+.timeline-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-content h4 {
+  margin-bottom: 0.25rem;
+}
+
+.timeline-content .timestamp {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.timeline-content .datm-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.datm-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.datm-badge.truth { background: #dbeafe; color: #1e40af; }
+.datm-badge.goodness { background: #dcfce7; color: #166534; }
+.datm-badge.beauty { background: #fce7f3; color: #9d174d; }
+.datm-badge.intelligence { background: #fef3c7; color: #92400e; }
+
+.timeline-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timeline-actions button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.timeline-actions .delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.timeline-actions .load-btn {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+/* ===== 添加轨迹点 ===== */
+.add-timeline-point {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.add-timeline-point h3 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.point-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.point-form input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+}
+
+/* ===== 演化分析 ===== */
+.evolution-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.evo-card {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-sm);
+  text-align: center;
+}
+
+.evo-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.evo-card h3 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.evo-card p {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* ===== 导出区域 ===== */
+.export-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ===== 模态框 ===== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-content h3 {
+  margin-bottom: 1rem;
+}
+
+.modal-content textarea {
+  width: 100%;
+  height: 200px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-family: monospace;
+  font-size: 0.9rem;
+  resize: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 1024px) {
+  .datm-viz-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .evolution-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .preset-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .evolution-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .slider-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .preset-grid {
+    grid-template-columns: 1fr;
+  }
+}
