@@ -1,0 +1,208 @@
+/**
+ * Kai-OS 读书会场景页面
+ * v0.5.0 - 读书会场景扩展
+ */
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>读书会 - Kai-OS</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/reading.css">
+</head>
+<body class="reading-page">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/">Kai-OS</a>
+      <span class="nav-version">v0.5.0</span>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">首页</a>
+      <a href="/dashboard" class="nav-link">控制台</a>
+      <a href="/create" class="nav-link">创建主理人</a>
+      <a href="/datm-viz" class="nav-link">知识矩阵</a>
+      <a href="/reading" class="nav-link active">📚 读书会</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header class="page-header">
+      <h1>📚 读书会场景</h1>
+      <p>选择一本书，创建专属读书助手</p>
+    </header>
+
+    <!-- 书籍选择区 -->
+    <section class="book-selection">
+      <h2>📖 选择书籍类型</h2>
+      <div class="book-grid">
+        <div class="book-card" data-type="literature" onclick="selectBookType('literature')">
+          <div class="book-icon">📚</div>
+          <h3>文学经典</h3>
+          <p>小说、诗歌、散文</p>
+          <div class="datm-preview-small">
+            <span class="badge truth">真60</span>
+            <span class="badge goodness">善80</span>
+            <span class="badge beauty">美95</span>
+            <span class="badge intelligence">灵75</span>
+          </div>
+        </div>
+        
+        <div class="book-card" data-type="philosophy" onclick="selectBookType('philosophy')">
+          <div class="book-icon">🔮</div>
+          <h3>哲学思辨</h3>
+          <p>哲学、伦理学、逻辑</p>
+          <div class="datm-preview-small">
+            <span class="badge truth">真80</span>
+            <span class="badge goodness">善85</span>
+            <span class="badge beauty">美70</span>
+            <span class="badge intelligence">灵90</span>
+          </div>
+        </div>
+        
+        <div class="book-card" data-type="history" onclick="selectBookType('history')">
+          <div class="book-icon">🏛️</div>
+          <h3>历史人文</h3>
+          <p>历史、传记、社会</p>
+          <div class="datm-preview-small">
+            <span class="badge truth">真80</span>
+            <span class="badge goodness">善80</span>
+            <span class="badge beauty">美75</span>
+            <span class="badge intelligence">灵70</span>
+          </div>
+        </div>
+        
+        <div class="book-card" data-type="science" onclick="selectBookType('science')">
+          <div class="book-icon">🔬</div>
+          <h3>科普读物</h3>
+          <p>科学、技术、医学</p>
+          <div class="datm-preview-small">
+            <span class="badge truth">真90</span>
+            <span class="badge goodness">善60</span>
+            <span class="badge beauty">美70</span>
+            <span class="badge intelligence">灵85</span>
+          </div>
+        </div>
+        
+        <div class="book-card" data-type="business" onclick="selectBookType('business')">
+          <div class="book-icon">💼</div>
+          <h3>商业管理</h3>
+          <p>管理、经济、创业</p>
+          <div class="datm-preview-small">
+            <span class="badge truth">真75</span>
+            <span class="badge goodness">善70</span>
+            <span class="badge beauty">美60</span>
+            <span class="badge intelligence">灵80</span>
+          </div>
+        </div>
+        
+        <div class="book-card" data-type="psychology" onclick="selectBookType('psychology')">
+          <div class="book-icon">💭</div>
+          <h3>心理成长</h3>
+          <p>心理、自助、情感</p>
+          <div class="datm-preview-small">
+            <span class="badge truth">真70</span>
+            <span class="badge goodness">善90</span>
+            <span class="badge beauty">美85</span>
+            <span class="badge intelligence">灵75</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 自定义配置区 -->
+    <section class="custom-config" id="customConfig" style="display:none;">
+      <h2>⚙️ 自定义配置</h2>
+      
+      <div class="config-form">
+        <div class="form-group">
+          <label>书名</label>
+          <input type="text" id="bookTitle" placeholder="输入书名，如《百年孤独》">
+        </div>
+        
+        <div class="form-group">
+          <label>主理人名称</label>
+          <input type="text" id="hostName" placeholder="如：百年孤独读书助手">
+        </div>
+        
+        <div class="form-group">
+          <label>一句话介绍</label>
+          <input type="text" id="hostDesc" placeholder="帮助深入理解这本书">
+        </div>
+        
+        <div class="form-group">
+          <label>知识矩阵 (DATM)</label>
+          <div class="datm-adjust">
+            <div class="slider-row">
+              <label>🔬 Truth (科学性)</label>
+              <input type="range" id="datmTruth" min="0" max="100" value="70">
+              <span id="datmTruthVal">70</span>
+            </div>
+            <div class="slider-row">
+              <label>🤝 Goodness (社科性)</label>
+              <input type="range" id="datmGoodness" min="0" max="100" value="70">
+              <span id="datmGoodnessVal">70</span>
+            </div>
+            <div class="slider-row">
+              <label>🎨 Beauty (人文性)</label>
+              <input type="range" id="datmBeauty" min="0" max="100" value="70">
+              <span id="datmBeautyVal">70</span>
+            </div>
+            <div class="slider-row">
+              <label>💡 Intelligence (创新性)</label>
+              <input type="range" id="datmIntelligence" min="0" max="100" value="70">
+              <span id="datmIntelligenceVal">70</span>
+            </div>
+          </div>
+          <div class="datm-canvas-container">
+            <canvas id="reading-radar" width="300" height="300"></canvas>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="resetConfig()">重置</button>
+          <button class="btn btn-primary" onclick="createReadingHost()">创建读书助手</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 已有读书助手 -->
+    <section class="existing-hosts">
+      <h2>📚 我的读书助手</h2>
+      <div id="readingHostsList" class="hosts-list">
+        <p class="loading">加载中...</p>
+      </div>
+    </section>
+
+    <!-- 模板市场入口 -->
+    <section class="template-market">
+      <h2>🎁 模板市场</h2>
+      <p>使用预设模板，快速创建读书助手</p>
+      <div class="template-grid">
+        <div class="template-card" onclick="useTemplate('commonwealth')">
+          <h4>《百年孤独》</h4>
+          <p>魔幻现实主义经典</p>
+          <span class="template-author">by Wendy</span>
+        </div>
+        <div class="template-card" onclick="useTemplate('tao')">
+          <h4>《道德经》</h4>
+          <p>道家哲学入门</p>
+          <span class="template-author">by Kai-OS</span>
+        </div>
+        <div class="template-card" onclick="useTemplate('think')">
+          <h4>《思考，快与慢》</h4>
+          <p>心理学经典</p>
+          <span class="template-author">by Kai-OS</span>
+        </div>
+        <div class="template-card" onclick="useTemplate('sapiens')">
+          <h4>《人类简史》</h4>
+          <p>历史科普必读</p>
+          <span class="template-author">by Kai-OS</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/js/reading.js"></script>
+</body>
+</html>

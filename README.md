@@ -67,27 +67,23 @@ const reply = await fetch('http://localhost:3000/api/hosts/abc123/chat', {
 
 ## ✨ 核心功能
 
-### v0.4.0 (当前版本) - 开放 API & 第三方接入
+### v0.5.0 (当前版本) - 读书会场景扩展 🆕
 
 - ✅ **用户系统**：注册/登录/会话管理
 - ✅ **主理人管理**：创建、编辑、删除数字主理人
 - ✅ **5步创建向导**：简单几步打造专属分身
 - ✅ **知识矩阵 (DATM) 可视化工具**
-- ✅ **RESTful API** 🆕
-  - 主理人 CRUD API
-  - DATM 读取/更新 API
-  - 完整的 OpenAPI 3.0 规范
-- ✅ **Webhook 回调** 🆕
-  - 支持多种事件类型
-  - HMAC-SHA256 签名验证
-  - 异步回调发送
-- ✅ **开发者文档** 🆕
-  - 完整的 API 文档
-  - 多语言 SDK 示例
-  - 错误处理指南
+- ✅ **RESTful API**：主理人 CRUD + DATM 读写
+- ✅ **Webhook 回调**：事件订阅 + 签名验证
+- ✅ **开发者文档**：API 文档 + SDK 示例
+- ✅ **读书会场景** 🆕
+  - 6 种书籍类型 (文学/哲学/历史/科普/商业/心理)
+  - 预置 Prompt 模板 (调度/专家/问答智能体)
+  - DATM 智能推荐
+  - 模板市场预设 (百年孤独/道德经/思考快与慢/人类简史)
 - ✅ **Prompt 模板库**：内置多种场景模板
 
-### 即将推出 (v0.5+)
+### 即将推出 (v0.6+)
 
 - 📱 **模板市场**
 - 🐳 **Docker 部署**
@@ -104,20 +100,27 @@ kai-os/
 │   ├── pages/         # 页面
 │   │   ├── dashboard.html      # 主理人管理面板
 │   │   ├── create-host.html    # 创建主理人向导
-│   │   └── datm-viz.html       # 知识矩阵可视化工具
+│   │   ├── datm-viz.html       # 知识矩阵可视化工具
+│   │   └── reading.html        # 🆕 读书会场景页面
 │   └── assets/
 │       ├── css/       # 样式
 │       │   ├── style.css
-│       │   └── datm-viz.css
+│       │   ├── datm-viz.css
+│       │   └── reading.css     # 🆕 读书会样式
 │       ├── js/        # 脚本
 │       │   ├── dashboard.js
 │       │   ├── create-host.js
-│       │   └── datm-viz.js
+│       │   ├── datm-viz.js
+│       │   └── reading.js      # 🆕 读书会逻辑
 │       └── avatars/   # 头像
 ├── data/              # 数据存储 (JSON)
-├── docs/              # 🆕 文档
+├── docs/              # 文档
 │   ├── openapi.json   # OpenAPI 3.0 规范
-│   └── API.md         # 开发者文档
+│   ├── API.md         # 开发者文档
+│   ├── FUDAN_SALON_*.md  # 沙龙方案/PPT
+│   └── RESEARCH_REPORT.md  # 市场调研
+├── prompts/           # 🆕 Prompt 模板
+│   └── reading-club.yaml   # 读书会场景模板
 ├── server.js          # 主服务器
 ├── package.json
 └── ROADMAP.md         # 版本路线图
@@ -142,8 +145,9 @@ kai-os/
 | v0.1 | 2026-01-29 | 基础框架，Web 容器 + Prompt 模板 |
 | v0.2 | 2026-01-29 | 平台基础设施，用户系统 + 主理人管理 |
 | v0.3 | 2026-01-29 | 知识矩阵可视化工具，雷达图 + 时间线 + 演化分析 |
-| v0.4 | 2026-01-29 | **开放 API**，RESTful + Webhook + OpenAPI 规范 |
-| v0.5 | 规划中 | 模板市场 + Docker 部署 |
+| v0.4 | 2026-01-29 | 开放 API，RESTful + Webhook + OpenAPI 规范 |
+| v0.5 | 2026-01-29 | **读书会场景**，6种书籍类型 + 预置模板 + 模板市场 |
+| v0.6 | 规划中 | 模板市场 + Docker 部署 |
 | v1.0 | 规划中 | 正式平台发布 |
 
 详见 [ROADMAP.md](ROADMD.md)

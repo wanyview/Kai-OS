@@ -1,6 +1,6 @@
 /**
  * Kai-OS Platform Server
- * v0.4.0 - 开放 API & 第三方接入
+ * v0.5.0 - 读书会场景扩展
  */
 
 const http = require('http');
@@ -38,6 +38,7 @@ const routes = {
   'GET /src/pages/create-host.html': 'src/pages/create-host.html',
   'GET /src/pages/datm-viz.html': 'src/pages/datm-viz.html',
   'GET /datm-viz': 'src/pages/datm-viz.html',
+  'GET /reading': 'src/pages/reading.html',
   'GET /src/api/users': 'api:users',
   'POST /api/users': 'api:create-user',
   'GET /api/hosts': 'api:hosts',
@@ -439,8 +440,9 @@ server.listen(PORT, () => {
 ║     Dashboard:http://localhost:${PORT}/dashboard ║
 ║     Create:   http://localhost:${PORT}/create   ║
 ║     DATM Viz: http://localhost:${PORT}/datm-viz ║
+║     Reading:  http://localhost:${PORT}/reading  ║
 ║                                           ║
-║  🔧 API Endpoints (v0.4):                 ║
+║  🔧 API Endpoints (v0.5):                 ║
 ║     GET    /api/hosts                     ║
 ║     POST   /api/hosts                     ║
 ║     GET    /api/hosts/:id                 ║
